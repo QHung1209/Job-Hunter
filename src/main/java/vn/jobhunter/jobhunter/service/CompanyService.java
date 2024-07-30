@@ -1,9 +1,12 @@
 package vn.jobhunter.jobhunter.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.jobhunter.jobhunter.domain.Company;
+import vn.jobhunter.jobhunter.domain.dto.Meta;
+import vn.jobhunter.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.repository.CompanyRepository;
 import vn.jobhunter.jobhunter.util.SecurityUtil;
 import java.time.Instant;
@@ -28,8 +31,20 @@ public class CompanyService {
         return company.isPresent() == true ? company.get() : null;
     }
 
-    public List<Company> handleGetAllCompany(Pageable pageable) {
-        return this.companyRepository.findAll(pageable).getContent();
+    public ResultPaginationDTO handleGetAllCompany(Pageable pageable) {
+        Page<Company> pCompany = this.companyRepository.findAll(pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        Meta mt = new Meta();
+
+        mt.setPage(pCompany.getNumber() + 1);
+        mt.setPageSize(pCompany.getSize());
+
+        mt.setPages(pCompany.getTotalPages());
+        mt.setTotal(pCompany.getTotalElements());
+
+        rs.setMeta(mt);
+        rs.setResult(pCompany.getContent());
+        return rs;
     }
 
     public Company handleUpdateCompany(Company company) {
@@ -44,8 +59,7 @@ public class CompanyService {
         return current;
     }
 
-    public void handleDeleteCompany(long id)
-    {
+    public void handleDeleteCompany(long id) {
         this.companyRepository.deleteById(id);
     }
 

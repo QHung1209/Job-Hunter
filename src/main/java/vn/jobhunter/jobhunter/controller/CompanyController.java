@@ -3,6 +3,7 @@ package vn.jobhunter.jobhunter.controller;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import vn.jobhunter.jobhunter.domain.Company;
+import vn.jobhunter.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.service.CompanyService;
 
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +38,7 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<Object> getAllCompany(@RequestParam("current") Optional<String> currentOptional,
+    public ResponseEntity<ResultPaginationDTO> getAllCompany(@RequestParam("current") Optional<String> currentOptional,
             @RequestParam("pageSize") Optional<String> pageSizeOptional) {
         String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
         String sPageSise = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
