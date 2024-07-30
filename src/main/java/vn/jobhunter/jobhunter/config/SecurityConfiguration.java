@@ -82,7 +82,7 @@ public class SecurityConfiguration {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("hoidanit");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("hung");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
