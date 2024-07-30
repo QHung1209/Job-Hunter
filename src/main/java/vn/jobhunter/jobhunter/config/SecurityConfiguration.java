@@ -28,9 +28,9 @@ import vn.jobhunter.jobhunter.util.SecurityUtil;
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
 
-    @Value("${hoidanit.jwt.base64-secret}")
+    @Value("${key.jwt.base64-secret}")
     private String jwtKey;
-    @Value("${hoidanit.jwt.token-validity-in-seconds}")
+    @Value("${time.jwt.token-validity-in-seconds}")
     private String jwtKeyExpiration;
 
     @Bean
