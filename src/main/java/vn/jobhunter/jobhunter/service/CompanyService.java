@@ -1,5 +1,6 @@
 package vn.jobhunter.jobhunter.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.jobhunter.jobhunter.domain.Company;
@@ -27,8 +28,8 @@ public class CompanyService {
         return company.isPresent() == true ? company.get() : null;
     }
 
-    public List<Company> handleGetAllCompany() {
-        return this.companyRepository.findAll();
+    public List<Company> handleGetAllCompany(Pageable pageable) {
+        return this.companyRepository.findAll(pageable).getContent();
     }
 
     public Company handleUpdateCompany(Company company) {
