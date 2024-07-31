@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.jobhunter.jobhunter.domain.User;
-import vn.jobhunter.jobhunter.domain.dto.ReqLoginDTO;
-import vn.jobhunter.jobhunter.domain.dto.ResLoginDTO;
+import vn.jobhunter.jobhunter.domain.request.ReqLoginDTO;
+import vn.jobhunter.jobhunter.domain.response.ResLoginDTO;
 import vn.jobhunter.jobhunter.service.UserService;
 import vn.jobhunter.jobhunter.util.SecurityUtil;
 import vn.jobhunter.jobhunter.util.error.IdInvalidException;

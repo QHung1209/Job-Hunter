@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.nimbusds.jose.util.Base64;
 
-import vn.jobhunter.jobhunter.domain.dto.ResLoginDTO;
+import vn.jobhunter.jobhunter.domain.response.ResLoginDTO;
 
 import java.util.Optional;
 

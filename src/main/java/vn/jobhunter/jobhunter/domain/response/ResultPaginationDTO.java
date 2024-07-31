@@ -1,4 +1,4 @@
-package vn.jobhunter.jobhunter.domain.dto;
+package vn.jobhunter.jobhunter.domain.response;
 
 public class ResultPaginationDTO {
     private Meta meta;

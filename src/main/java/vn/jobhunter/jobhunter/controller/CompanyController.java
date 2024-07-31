@@ -6,7 +6,7 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.jobhunter.jobhunter.domain.Company;
-import vn.jobhunter.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.jobhunter.jobhunter.domain.response.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.service.CompanyService;
 
 import org.springframework.data.domain.Pageable;
