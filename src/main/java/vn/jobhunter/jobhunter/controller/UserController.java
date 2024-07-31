@@ -2,13 +2,22 @@ package vn.jobhunter.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
+import jakarta.validation.Valid;
 import vn.jobhunter.jobhunter.domain.RestResponse;
 import vn.jobhunter.jobhunter.domain.User;
+import vn.jobhunter.jobhunter.domain.dto.ResCreateUserDTO;
+import vn.jobhunter.jobhunter.domain.dto.ResUpdateUserDTO;
+import vn.jobhunter.jobhunter.domain.dto.ResUserDTO;
+import vn.jobhunter.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.service.UserService;
 import vn.jobhunter.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,39 +41,49 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createNewUser(@RequestBody User postManUser) {
+    public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User postManUser)
+            throws IdInvalidException {
+
+        if (this.userService.isEmailExist(postManUser.getEmail()) == true) {
+            throw new IdInvalidException("Email da ton tai");
+        }
         postManUser.setPassword(this.passwordEncoder.encode(postManUser.getPassword()));
-        User Hung = this.userService.handleCreateUser(postManUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Hung);
+        User newUser = this.userService.handleCreateUser(postManUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(newUser));
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<RestResponse<String>> deleteUser(@PathVariable("id") long id) throws IdInvalidException{
-        if(id >=1500)
-        {
-            throw new IdInvalidException("Id khong lon hon 1500");
-        }
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
 
+        if (this.userService.handleGetUser(id) == null) {
+            throw new IdInvalidException("User khong ton tai");
+        }
         this.userService.handleDeleteUser(id);
-        RestResponse<String> res = new RestResponse<>();
-        res.setData("User deleted successfully");
-        res.setMessage("Success");
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok().body(null);
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") long id) {
-        return ResponseEntity.ok(this.userService.handleGetUser(id));
+    public ResponseEntity<ResUserDTO> getUser(@PathVariable("id") long id) throws IdInvalidException {
+        if (this.userService.handleGetUser(id) == null) {
+            throw new IdInvalidException("User khong ton tai");
+        }
+        User user = this.userService.handleGetUser(id);
+        return ResponseEntity.ok(this.userService.convertToResUserDTO(user));
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUser() {
-        return ResponseEntity.ok(this.userService.handleGetAllUser());
+    public ResponseEntity<ResultPaginationDTO> getAllUser(@Filter Specification<User> spec, Pageable pageable) {
+        return ResponseEntity.ok(this.userService.handleGetAllUser(spec, pageable));
     }
 
     @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User postmanUser) {
-        return ResponseEntity.ok(this.userService.handleUpdateUser(postmanUser));
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User postmanUser) throws IdInvalidException {
+        User updateUser = this.userService.handleUpdateUser(postmanUser);
+        if(updateUser == null)
+        {
+            throw new IdInvalidException("User khong ton tai");
+        }
+        return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(updateUser));
     }
 
 }
