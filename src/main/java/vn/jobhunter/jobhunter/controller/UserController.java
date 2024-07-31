@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
-import vn.jobhunter.jobhunter.domain.RestResponse;
 import vn.jobhunter.jobhunter.domain.User;
 import vn.jobhunter.jobhunter.domain.dto.ResCreateUserDTO;
 import vn.jobhunter.jobhunter.domain.dto.ResUpdateUserDTO;
@@ -13,8 +12,6 @@ import vn.jobhunter.jobhunter.domain.dto.ResUserDTO;
 import vn.jobhunter.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.service.UserService;
 import vn.jobhunter.jobhunter.util.error.IdInvalidException;
-
-import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

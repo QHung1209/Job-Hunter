@@ -9,9 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import vn.jobhunter.jobhunter.domain.Company;
 import vn.jobhunter.jobhunter.domain.User;
-import vn.jobhunter.jobhunter.domain.dto.Meta;
 import vn.jobhunter.jobhunter.domain.dto.ResCreateUserDTO;
 import vn.jobhunter.jobhunter.domain.dto.ResUpdateUserDTO;
 import vn.jobhunter.jobhunter.domain.dto.ResUserDTO;
@@ -45,7 +43,7 @@ public class UserService {
     public ResultPaginationDTO handleGetAllUser(Specification<User> specification, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(specification, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
-        Meta mt = new Meta();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
@@ -127,4 +125,18 @@ public class UserService {
         return res;
     }
 
+    public void updateUserToken(String token, String email)
+    {
+        User current = this.handleGetUserByUserName(email);
+        if(current != null)
+        {
+            current.setRefreshToken(token);
+            this.userRepository.save(current);
+        }
+    }
+
+    public User getUserByRefreshTokenAndEmail(String token, String email)
+    {
+        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
 }
