@@ -9,22 +9,31 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import vn.jobhunter.jobhunter.domain.Company;
 import vn.jobhunter.jobhunter.domain.User;
 import vn.jobhunter.jobhunter.domain.response.ResCreateUserDTO;
 import vn.jobhunter.jobhunter.domain.response.ResUpdateUserDTO;
 import vn.jobhunter.jobhunter.domain.response.ResUserDTO;
 import vn.jobhunter.jobhunter.domain.response.ResultPaginationDTO;
+import vn.jobhunter.jobhunter.repository.CompanyRepository;
 import vn.jobhunter.jobhunter.repository.UserRepository;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CompanyRepository companyRepository) {
         this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
+
     }
 
     public User handleCreateUser(User user) {
+        if (user.getCompany() != null) {
+            Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
+            user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
         return this.userRepository.save(user);
     }
 
@@ -65,8 +74,14 @@ public class UserService {
             currentUser.setAddress(user.getAddress());
             currentUser.setAge(user.getAge());
 
+            if (user.getCompany() != null) {
+                Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
+                user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+            }
+            currentUser.setCompany(user.getCompany());
             currentUser = this.userRepository.save(currentUser);
         }
+
         return currentUser;
     }
 
@@ -80,6 +95,8 @@ public class UserService {
 
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
+        ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
+
         res.setAddress(user.getAddress());
         res.setAge(user.getAge());
         res.setCreatedAt(user.getCreatedAt());
@@ -87,6 +104,12 @@ public class UserService {
         res.setGenderEnum(user.getGender());
         res.setId(user.getId());
         res.setName(user.getName());
+
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompanyUser(com);
+        } 
 
         return res;
     }
@@ -101,6 +124,13 @@ public class UserService {
         res.setId(user.getId());
         res.setName(user.getName());
         res.setCreatedBy(user.getCreatedBy());
+
+        ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompanyUser(com);
+        } 
 
         return res;
     }
@@ -122,21 +152,26 @@ public class UserService {
         res.setName(user.getName());
         res.setId(user.getId());
         res.setUpdatedAt(user.getUpdatedAt());
+
+        ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompanyUser(com);
+        } 
+
         return res;
     }
 
-    public void updateUserToken(String token, String email)
-    {
+    public void updateUserToken(String token, String email) {
         User current = this.handleGetUserByUserName(email);
-        if(current != null)
-        {
+        if (current != null) {
             current.setRefreshToken(token);
             this.userRepository.save(current);
         }
     }
 
-    public User getUserByRefreshTokenAndEmail(String token, String email)
-    {
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }
 }

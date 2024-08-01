@@ -6,16 +6,22 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.jobhunter.jobhunter.domain.Company;
+import vn.jobhunter.jobhunter.domain.User;
 import vn.jobhunter.jobhunter.domain.response.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.repository.CompanyRepository;
+import vn.jobhunter.jobhunter.repository.UserRepository;
+
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class CompanyService {
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
+    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository) {
         this.companyRepository = companyRepository;
+        this.userRepository = userRepository;
     }
 
     public Company handleCreateCompany(Company company) {
@@ -29,7 +35,7 @@ public class CompanyService {
     }
 
     public ResultPaginationDTO handleGetAllCompany(Specification<Company> specification, Pageable pageable) {
-        Page<Company> pCompany = this.companyRepository.findAll(specification,pageable);
+        Page<Company> pCompany = this.companyRepository.findAll(specification, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
@@ -57,6 +63,12 @@ public class CompanyService {
     }
 
     public void handleDeleteCompany(long id) {
+        Optional<Company> com = this.companyRepository.findById(id);
+        if (com.isPresent()) {
+            Company company = com.get();
+            List<User> listUsers = this.userRepository.findByCompany(company);
+            this.userRepository.deleteAll(listUsers);
+        }
         this.companyRepository.deleteById(id);
     }
 

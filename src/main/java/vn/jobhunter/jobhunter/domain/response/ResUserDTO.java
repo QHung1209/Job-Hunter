@@ -2,6 +2,7 @@ package vn.jobhunter.jobhunter.domain.response;
 
 import java.time.Instant;
 
+import vn.jobhunter.jobhunter.domain.response.ResCreateUserDTO.CompanyUser;
 import vn.jobhunter.jobhunter.util.constant.GenderEnum;
 
 public class ResUserDTO {
@@ -13,6 +14,13 @@ public class ResUserDTO {
     private String address;
     private Instant createdAt;
     private String createdBy;
+    private CompanyUser company;
+    public CompanyUser getCompanyUser() {
+        return company;
+    }
+    public void setCompanyUser(CompanyUser companyUser) {
+        this.company = companyUser;
+    }
     public long getId() {
         return id;
     }
