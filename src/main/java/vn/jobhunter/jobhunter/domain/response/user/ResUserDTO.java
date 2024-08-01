@@ -1,10 +1,11 @@
-package vn.jobhunter.jobhunter.domain.response;
+package vn.jobhunter.jobhunter.domain.response.user;
 
 import java.time.Instant;
 
+import vn.jobhunter.jobhunter.domain.response.user.ResCreateUserDTO.CompanyUser;
 import vn.jobhunter.jobhunter.util.constant.GenderEnum;
 
-public class ResCreateUserDTO {
+public class ResUserDTO {
     private long id;
     private String name;
     private String email;
@@ -12,6 +13,7 @@ public class ResCreateUserDTO {
     private int age;
     private String address;
     private Instant createdAt;
+    private String createdBy;
     private CompanyUser company;
     public CompanyUser getCompanyUser() {
         return company;
@@ -19,24 +21,6 @@ public class ResCreateUserDTO {
     public void setCompanyUser(CompanyUser companyUser) {
         this.company = companyUser;
     }
-    public static class CompanyUser {
-        private long id;
-        private String name;
-        public long getId() {
-            return id;
-        }
-        public void setId(long id) {
-            this.id = id;
-        }
-        public String getName() {
-            return name;
-        }
-        public void setName(String name) {
-            this.name = name;
-        }
-        
-    }
-
     public long getId() {
         return id;
     }
@@ -79,5 +63,12 @@ public class ResCreateUserDTO {
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
+    public String getCreatedBy() {
+        return createdBy;
+    }
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     
 }

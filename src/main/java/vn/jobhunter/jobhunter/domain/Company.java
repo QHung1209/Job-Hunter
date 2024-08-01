@@ -49,6 +49,11 @@ public class Company {
     @JsonIgnore
     List<User> users;
 
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Job> jobs;
+    
+
     public List<User> getUsers() {
         return users;
     }
@@ -145,6 +150,14 @@ public class Company {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public List<Job> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(List<Job> jobs) {
+        this.jobs = jobs;
     }
 
 }

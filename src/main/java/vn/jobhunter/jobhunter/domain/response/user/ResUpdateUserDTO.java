@@ -1,8 +1,8 @@
-package vn.jobhunter.jobhunter.domain.response;
+package vn.jobhunter.jobhunter.domain.response.user;
 
 import java.time.Instant;
 
-import vn.jobhunter.jobhunter.domain.response.ResCreateUserDTO.CompanyUser;
+import vn.jobhunter.jobhunter.domain.response.user.ResCreateUserDTO.CompanyUser;
 import vn.jobhunter.jobhunter.util.constant.GenderEnum;
 
 public class ResUpdateUserDTO {

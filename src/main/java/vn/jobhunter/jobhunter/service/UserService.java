@@ -9,12 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import vn.jobhunter.jobhunter.domain.Company;
 import vn.jobhunter.jobhunter.domain.User;
-import vn.jobhunter.jobhunter.domain.response.ResCreateUserDTO;
-import vn.jobhunter.jobhunter.domain.response.ResUpdateUserDTO;
-import vn.jobhunter.jobhunter.domain.response.ResUserDTO;
 import vn.jobhunter.jobhunter.domain.response.ResultPaginationDTO;
+import vn.jobhunter.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.jobhunter.jobhunter.domain.response.user.ResUpdateUserDTO;
+import vn.jobhunter.jobhunter.domain.response.user.ResUserDTO;
 import vn.jobhunter.jobhunter.repository.CompanyRepository;
 import vn.jobhunter.jobhunter.repository.UserRepository;
 
@@ -45,11 +47,11 @@ public class UserService {
         Optional<User> userOptional = this.userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userOptional.get();
-        }
+        } 
         return null;
     }
 
-    public ResultPaginationDTO handleGetAllUser(Specification<User> specification, Pageable pageable) {
+    public ResultPaginationDTO handleGetAllUser(@Filter Specification<User> specification, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(specification, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
