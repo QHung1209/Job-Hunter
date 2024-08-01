@@ -74,6 +74,8 @@ public class JobService {
         mt.setTotal(jobPage.getTotalPages());
 
         rs.setMeta(mt);
+        List<Job> j = jobPage.getContent();
+        rs.setResult(j);
         return rs;
     }
 

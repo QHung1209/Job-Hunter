@@ -1,5 +1,6 @@
 package vn.jobhunter.jobhunter.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -57,6 +58,8 @@ public class SkillService {
         mt.setTotal(pageSkill.getTotalPages());
 
         rs.setMeta(mt);
+        List<Skill> s = pageSkill.getContent();
+        rs.setResult(s);
         return rs;
     }
 }
