@@ -17,7 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import vn.jobhunter.jobhunter.domain.response.RestResponse;
 
 @Component
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint  {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
     private final AuthenticationEntryPoint delegate = new BearerTokenAuthenticationEntryPoint();
 
     private final ObjectMapper mapper;
@@ -27,20 +28,16 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     }
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException authException) throws IOException, ServletException {
         this.delegate.commence(request, response, authException);
         response.setContentType("application/json;charset=UTF-8");
 
-        RestResponse<Object> res = new RestResponse<>();
+        RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        res.setError(authException.getCause().getMessage());
+        res.setMessage("Token không hợp lệ (hết hạn, không đúng định dạng, hoặc không truyền JWT ở header)...");
 
-        String erroMessage = Optional.ofNullable(authException.getCause())
-                            .map(Throwable::getMessage)
-                            .orElse(authException.getMessage());
-
-        res.setError(erroMessage);
-        res.setMessage("Token invalid");
-
-        mapper.writeValue(response.getWriter(),res);
+        mapper.writeValue(response.getWriter(), res);
     }
 }
