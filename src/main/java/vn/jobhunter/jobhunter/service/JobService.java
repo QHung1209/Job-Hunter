@@ -42,7 +42,7 @@ public class JobService {
         ResCreateJobDTO res = new ResCreateJobDTO();
         res.setName(current.getName());
         res.setLevel(current.getLevel());
-        res.setLocation(current.getlocation());
+        res.setLocation(current.getLocation());
         res.setEndDate(current.getEndDate());
         res.setQuantity(current.getQuantity());
         res.setSalary(current.getQuantity());
@@ -94,7 +94,7 @@ public class JobService {
         ResUpdateJobDTO res = new ResUpdateJobDTO();
         res.setName(current.getName());
         res.setLevel(current.getLevel());
-        res.setLocation(current.getlocation());
+        res.setLocation(current.getLocation());
         res.setEndDate(current.getEndDate());
         res.setQuantity(current.getQuantity());
         res.setSalary(current.getQuantity());

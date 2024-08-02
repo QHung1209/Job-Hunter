@@ -46,6 +46,15 @@ public class Job {
     private Instant startDate;
     private Instant endDate;
     private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
@@ -86,14 +95,6 @@ public class Job {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getlocation() {
-        return location;
-    }
-
-    public void setlocation(String location) {
-        this.location = location;
     }
 
     public double getSalary() {
@@ -144,14 +145,6 @@ public class Job {
         this.endDate = endDate;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -194,11 +187,10 @@ public class Job {
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.setUpdatedAt(Instant.now());
-        this.setUpdatedBy(
-                SecurityUtil.getCurrentUserLogin().isPresent()
-                        ? SecurityUtil.getCurrentUserLogin().get()
-                        : " ");
+        this.updatedAt = Instant.now();
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent()
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : " ";
 
     }
 
