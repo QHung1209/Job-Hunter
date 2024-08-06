@@ -41,7 +41,7 @@ public class RoleService {
     }
 
     public Role handleGetRole(long id) {
-        Optional<Role> role = this.roleRepository.findById(null);
+        Optional<Role> role = this.roleRepository.findById(id);
         return role.isPresent() ? role.get() : null;
     }
 

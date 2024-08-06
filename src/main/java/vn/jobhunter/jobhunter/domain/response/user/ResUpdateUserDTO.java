@@ -3,6 +3,7 @@ package vn.jobhunter.jobhunter.domain.response.user;
 import java.time.Instant;
 
 import vn.jobhunter.jobhunter.domain.response.user.ResCreateUserDTO.CompanyUser;
+import vn.jobhunter.jobhunter.domain.response.user.ResCreateUserDTO.RoleUser;
 import vn.jobhunter.jobhunter.util.constant.GenderEnum;
 
 public class ResUpdateUserDTO {
@@ -14,6 +15,15 @@ public class ResUpdateUserDTO {
     private Instant updatedAt;
 
     private CompanyUser company;
+    private RoleUser role;
+
+    public RoleUser getRole() {
+        return role;
+    }
+
+    public void setRole(RoleUser role) {
+        this.role = role;
+    }
 
     public CompanyUser getCompanyUser() {
         return company;

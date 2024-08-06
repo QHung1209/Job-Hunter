@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.turkraft.springfilter.boot.Filter;
 
 import vn.jobhunter.jobhunter.domain.Company;
+import vn.jobhunter.jobhunter.domain.Role;
 import vn.jobhunter.jobhunter.domain.User;
 import vn.jobhunter.jobhunter.domain.response.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.domain.response.user.ResCreateUserDTO;
@@ -24,10 +25,12 @@ import vn.jobhunter.jobhunter.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, CompanyRepository companyRepository) {
+    public UserService(UserRepository userRepository, CompanyRepository companyRepository, RoleService roleService) {
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
+        this.roleService = roleService;
 
     }
 
@@ -36,6 +39,12 @@ public class UserService {
             Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
             user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
         }
+
+        if (user.getRole() != null) {
+            Role role = this.roleService.handleGetRole(user.getRole().getId());
+            user.setRole(role != null ? role : null);
+        }
+
         return this.userRepository.save(user);
     }
 
@@ -47,7 +56,7 @@ public class UserService {
         Optional<User> userOptional = this.userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userOptional.get();
-        } 
+        }
         return null;
     }
 
@@ -78,9 +87,14 @@ public class UserService {
 
             if (user.getCompany() != null) {
                 Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
-                user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+                currentUser.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
             }
-            currentUser.setCompany(user.getCompany());
+
+            if (user.getRole() != null) {
+                Role role = this.roleService.handleGetRole(user.getRole().getId());
+                currentUser.setRole(role != null ? role : null);
+            }
+
             currentUser = this.userRepository.save(currentUser);
         }
 
@@ -98,7 +112,7 @@ public class UserService {
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
         ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
-
+        ResCreateUserDTO.RoleUser rol = new ResCreateUserDTO.RoleUser();
         res.setAddress(user.getAddress());
         res.setAge(user.getAge());
         res.setCreatedAt(user.getCreatedAt());
@@ -111,7 +125,12 @@ public class UserService {
             com.setId(user.getCompany().getId());
             com.setName(user.getCompany().getName());
             res.setCompanyUser(com);
-        } 
+        }
+        if (user.getRole() != null) {
+            rol.setId(user.getRole().getId());
+            rol.setName(user.getRole().getName());
+            res.setRole(rol);
+        }
 
         return res;
     }
@@ -132,8 +151,13 @@ public class UserService {
             com.setId(user.getCompany().getId());
             com.setName(user.getCompany().getName());
             res.setCompanyUser(com);
-        } 
-
+        }
+        ResCreateUserDTO.RoleUser rol = new ResCreateUserDTO.RoleUser();
+        if (user.getRole() != null) {
+            rol.setId(user.getRole().getId());
+            rol.setName(user.getRole().getName());
+            res.setRole(rol);
+        }
         return res;
     }
 
@@ -160,7 +184,13 @@ public class UserService {
             com.setId(user.getCompany().getId());
             com.setName(user.getCompany().getName());
             res.setCompanyUser(com);
-        } 
+        }
+        ResCreateUserDTO.RoleUser rol = new ResCreateUserDTO.RoleUser();
+        if (user.getRole() != null) {
+            rol.setId(user.getRole().getId());
+            rol.setName(user.getRole().getName());
+            res.setRole(rol);
+        }
 
         return res;
     }
