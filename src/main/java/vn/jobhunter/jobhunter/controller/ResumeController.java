@@ -19,21 +19,15 @@ import vn.jobhunter.jobhunter.domain.response.ResultPaginationDTO;
 import vn.jobhunter.jobhunter.domain.response.resume.ResCreateResumeDTO;
 import vn.jobhunter.jobhunter.domain.response.resume.ResGetResumeDTO;
 import vn.jobhunter.jobhunter.domain.response.resume.ResUpdateResumeDTO;
-import vn.jobhunter.jobhunter.service.JobService;
 import vn.jobhunter.jobhunter.service.ResumeService;
-import vn.jobhunter.jobhunter.service.UserService;
 import vn.jobhunter.jobhunter.util.error.IdInvalidException;
 
 @RestController
 public class ResumeController {
     final private ResumeService resumeService;
-    final private JobService jobService;
-    final private UserService userService;
 
-    public ResumeController(ResumeService resumeService, JobService jobService, UserService userService) {
+    public ResumeController(ResumeService resumeService) {
         this.resumeService = resumeService;
-        this.jobService = jobService;
-        this.userService = userService;
     }
 
     @PostMapping("resumes")
