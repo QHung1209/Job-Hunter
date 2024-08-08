@@ -76,4 +76,10 @@ public class ResumeController {
         this.resumeService.handleDeleteResume(id);
         return ResponseEntity.ok(null);
     }
+
+    @PostMapping("resume/by-user")
+    public ResponseEntity<ResultPaginationDTO> getResumeByUser(Pageable pageable)
+    {
+        return ResponseEntity.ok().body(this.resumeService.getResumeByUser(pageable));
+    }
 }

@@ -42,7 +42,12 @@ public class SkillService {
     {
         Skill current = this.handleGetSkill(id);
         current.getJobs().forEach(job -> job.getSkills().remove(current));
+
+        current.getSubscribers().forEach(subs -> subs.getSkills().remove(current));
+
+
         this.skillRepository.delete(current);
+
     }
 
     public ResultPaginationDTO handleGetAllSkill( Specification<Skill> specification, Pageable pageable)

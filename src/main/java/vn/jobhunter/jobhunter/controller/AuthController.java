@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+
 @RestController
 public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -52,12 +53,14 @@ public class AuthController {
         User currentUser = this.userService.handleGetUserByUserName(loginDTO.getUsername());
 
         ResLoginDTO res = new ResLoginDTO();
-        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
-        userLogin.setEmail(currentUser.getEmail());
-        userLogin.setId(currentUser.getId());
-        userLogin.setName(currentUser.getName());
-
-        res.setUser(userLogin);
+        if (currentUser != null) {
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+            userLogin.setEmail(currentUser.getEmail());
+            userLogin.setId(currentUser.getId());
+            userLogin.setName(currentUser.getName());
+            userLogin.setRole(currentUser.getRole());
+            res.setUser(userLogin);
+        }
         String access_token = this.securityUtil.createAccessToken(authentication.getName(), res);
 
         res.setAccessToken(access_token);
@@ -85,40 +88,45 @@ public class AuthController {
 
         ResLoginDTO res = new ResLoginDTO();
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
-        userLogin.setEmail(currentUser.getEmail());
-        userLogin.setId(currentUser.getId());
-        userLogin.setName(currentUser.getName());
 
-        res.setUser(userLogin);
+        if (currentUser != null) {
+
+            userLogin.setEmail(currentUser.getEmail());
+            userLogin.setId(currentUser.getId());
+            userLogin.setName(currentUser.getName());
+            userLogin.setRole(currentUser.getRole());
+            res.setUser(userLogin);
+        }
         return ResponseEntity.ok().body(userLogin);
     }
 
     @GetMapping("/auth/refresh")
     public ResponseEntity<ResLoginDTO> getRefreshToken(
-        @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws IdInvalidException {
-        
-            if(refresh_token.equals("abc"))
-            {
-                throw new IdInvalidException("Khong co refresh token o cookie");
-            }
-            Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
+            @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws IdInvalidException {
+
+        if (refresh_token.equals("abc")) {
+            throw new IdInvalidException("Khong co refresh token o cookie");
+        }
+        Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
         String email = decodedToken.getSubject();
 
         User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
-        
-        if(currentUser == null)
-        {
+
+        if (currentUser == null) {
             throw new IdInvalidException("Refesh token khong hop le");
         }
-        
+
         ResLoginDTO res = new ResLoginDTO();
         User currentUserDB = this.userService.handleGetUserByUserName(email);
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
-        userLogin.setEmail(currentUserDB.getEmail());
-        userLogin.setId(currentUserDB.getId());
-        userLogin.setName(currentUserDB.getName());
 
-        res.setUser(userLogin);
+        if (currentUserDB != null) {
+            userLogin.setEmail(currentUserDB.getEmail());
+            userLogin.setId(currentUserDB.getId());
+            userLogin.setName(currentUserDB.getName());
+            userLogin.setRole(currentUserDB.getRole());
+            res.setUser(userLogin);
+        }
         String access_token = this.securityUtil.createAccessToken(email, res);
 
         res.setAccessToken(access_token);
@@ -140,9 +148,8 @@ public class AuthController {
 
     @PostMapping("/auth/logout")
     public ResponseEntity<Void> logout() throws IdInvalidException {
-       String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
-        if(email.equals(""))
-        {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        if (email.equals("")) {
             throw new IdInvalidException("AcessToken khong hop le");
         }
         this.userService.updateUserToken(null, email);
@@ -155,6 +162,5 @@ public class AuthController {
 
         return ResponseEntity.ok(null);
     }
-    
 
 }

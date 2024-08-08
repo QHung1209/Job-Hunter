@@ -69,4 +69,14 @@ public class RoleController {
     {
         return ResponseEntity.ok(this.roleService.handleGetAllRole(specification, pageable));
     }
+
+    @GetMapping("roles/{id}")
+    public ResponseEntity<Role> getRoleById(@PathVariable("id") long id) throws IdInvalidException
+    {
+        Role role = this.roleService.handleGetRole(id);
+        if(role == null) {
+            throw new IdInvalidException("Id khong ton tai");
+        }
+        return ResponseEntity.ok(role);
+    }
 }

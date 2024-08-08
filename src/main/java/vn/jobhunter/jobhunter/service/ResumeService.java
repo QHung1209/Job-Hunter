@@ -8,17 +8,32 @@ import vn.jobhunter.jobhunter.domain.response.resume.ResUpdateResumeDTO;
 import vn.jobhunter.jobhunter.repository.JobRepository;
 import vn.jobhunter.jobhunter.repository.ResumeRepository;
 import vn.jobhunter.jobhunter.repository.UserRepository;
+import vn.jobhunter.jobhunter.util.SecurityUtil;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.turkraft.springfilter.converter.FilterSpecification;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import com.turkraft.springfilter.parser.FilterParser;
+import com.turkraft.springfilter.parser.node.FilterNode;
+
 @Service
 public class ResumeService {
+
+    @Autowired
+    private FilterParser filterParser;
+
+    @Autowired
+    private FilterSpecificationConverter filterSpecificationConverter;
+
     final private ResumeRepository resumeRepository;
     final private UserRepository userRepository;
     final private JobRepository jobRepository;
@@ -122,5 +137,26 @@ public class ResumeService {
 
     public void handleDeleteResume(long id) {
         this.resumeRepository.deleteById(id);
+    }
+
+    public ResultPaginationDTO getResumeByUser(Pageable pageable) {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        FilterNode node = filterParser.parse("email='" + email + "'");
+        FilterSpecification<Resume> specification = filterSpecificationConverter.convert(node);
+
+        Page<Resume> pageResume = this.resumeRepository.findAll(specification,pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+
+        mt.setPages(pageResume.getTotalPages());
+        mt.setTotal(pageResume.getTotalPages());
+
+        rs.setMeta(mt);
+        List<Resume> s = pageResume.getContent();
+        rs.setResult(this.convertToListResGetResumeDTOs(s));
+        return rs;
     }
 }

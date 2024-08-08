@@ -35,6 +35,10 @@ public class Skill {
     @JsonIgnore
     private List<Job> jobs;
 
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
+    @JsonIgnore
+    private List<Subscriber> subscribers;
+
     public List<Job> getJobs() {
         return jobs;
     }
@@ -107,6 +111,14 @@ public class Skill {
                         ? SecurityUtil.getCurrentUserLogin().get()
                         : " ");
 
+    }
+
+    public List<Subscriber> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(List<Subscriber> subscribers) {
+        this.subscribers = subscribers;
     }
 
 }

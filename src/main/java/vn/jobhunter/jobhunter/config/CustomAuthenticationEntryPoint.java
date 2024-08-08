@@ -1,8 +1,6 @@
 package vn.jobhunter.jobhunter.config;
 
 import java.io.IOException;
-import java.util.Optional;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
